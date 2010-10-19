@@ -23,7 +23,7 @@ class MOBI
     class InvalidEntity < StandardError; end
     attr_accessor :content
     
-    VALID_ENTITIES = %w(title div p img h1 h2 h3 ul li)
+    VALID_ENTITIES = %w(title div p a img h1 h2 h3 h4 h5 h6 ul li)
     
     def initialize(name, *args, &block)
       raise InvalidEntity.new("#{name} not supported!") if !VALID_ENTITIES.include?(name.to_s)
@@ -43,6 +43,7 @@ class MOBI
     
     def <<(content)
       @content << content
+      self
     end
     
     def empty?
@@ -59,7 +60,13 @@ class MOBI
         html << "/>\n"
       end
       html
-    end    
+    end
+    
+    # just add classes to the entity
+    def method_missing(sym, *args)
+      @class << sym.to_s
+      self
+    end
   end
   
   class Chapter
@@ -68,6 +75,7 @@ class MOBI
     def initialize(base_dir, output_dir, file)
       @beginning = false
       @entities = []
+      @footnotes = []
       @file = "#{file}.html"
       source = File.join(base_dir, "source/#{file}.txt")
       process(source)
@@ -86,6 +94,10 @@ class MOBI
 
       EOS
       data << @entities.map { |e| e.to_html }.join("\n")
+      @footnotes.each do |fn|
+        data << fn.to_html
+        data << "\n"
+      end
       data << <<-EOS
 
 
@@ -101,11 +113,15 @@ class MOBI
         "*"[0] => :ul,
         "-"[0] => :div,
         "<"[0] => :tag,
+        "^"[0] => :section,    # custom kindle tag
+        "!"[0] => :page_break, # custom kindle tag
         ":"[0] => :eoc,
       }
       FORMATTING = {
-        %r{/([^/]+)/} => :em,
-        %r{\*([^*]+)\*} => :b,
+        %r{/([^/]+)/} => "em",
+        %r{\*([^*]+)\*} => "strong",
+        %r{_([\w ]+)_} => "u",
+        %r{\[\+,([^\]]+)\]} => :footnote,
       }
       
       def process(source_file)
@@ -121,7 +137,11 @@ class MOBI
             FORMATTING.keys.each do |re|
               if md = re.match(line)
                 tag = FORMATTING[re]
-                line.gsub!(md[0], "<#{tag}>#{md[1]}</#{tag}>")
+                if tag.is_a?(Symbol)
+                  send("process_inline_#{tag}", md, line)
+                else
+                  line.gsub!(md[0], "<#{tag}>#{md[1]}</#{tag}>")
+                end
               end
             end
             if COMMANDS[command]
@@ -167,7 +187,7 @@ class MOBI
       end
       
       def process_eoc(line)
-        @entities << Entity.new("p", "* * *")
+        @entities << Entity.new("h1", "* * *").centered
       end
       
       def process_div(line)
@@ -194,6 +214,23 @@ class MOBI
           entity["class"] = css_class if css_class
           @current_container << entity
         end
+      end
+      
+      def process_section(line)
+      end
+      
+      def process_page_break(line)
+        @current_container << Entity.new("mbp:pagebreak")
+      end
+      
+      # process a footnote
+      def process_inline_footnote(md, line)
+        fn = @footnotes.size + 1
+        fn_e = Entity.new("p")
+        fn_e << Entity.new("a", :name => "fn-#{fn}")
+        fn_e << "#{fn}. #{md[1]}"
+        @footnotes << fn_e.small
+        line.gsub!(md[0], "<sup><a href=\"#fn-#{fn}\">#{fn}</a></sup>")
       end
       
       # parse attributes for tag
@@ -255,8 +292,7 @@ class MOBI
   
   def create(base_dir)
     @base_dir = base_dir
-    cfile = File.join(base_dir, "config.yaml")
-    @config = YAML.load(File.read(cfile))
+    @config = YAML.load(File.read(File.join(base_dir, "config.yaml")))
     
     FileUtils::mkdir_p @config['output']
     

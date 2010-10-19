@@ -6,6 +6,11 @@ p
 	text-indent: 0em
 }
 
+.small
+{
+	font-size: 70%;
+}
+
 .pagebreak
 {
 	page-break-before: always;

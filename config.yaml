@@ -10,6 +10,8 @@ meta:
     description: "This is my first book"
 content:
     toc: toc.ncx
+    # cover image dimensions (72 dpi)
+    # Minimum 500 x Maximum 1280 pixels
     cover: cover-image.gif
     chapters:
         - introduction
