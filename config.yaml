@@ -13,7 +13,7 @@ content:
     cover: cover-image.gif
     chapters:
         - introduction
-        - chap1
-        - chap2
-        - chap3
+        # - chap1
+        # - chap2
+        # - chap3
 output: out

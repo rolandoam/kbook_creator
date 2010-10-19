@@ -255,7 +255,8 @@ class MOBI
   
   def create(base_dir)
     @base_dir = base_dir
-    @config = YAML.load(File.read(File.join(base_dir, "config.yaml")))
+    cfile = File.join(base_dir, "config.yaml")
+    @config = YAML.load(File.read(cfile))
     
     FileUtils::mkdir_p @config['output']
     
