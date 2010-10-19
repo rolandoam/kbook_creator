@@ -1,0 +1,19 @@
+name: "my-ebook"
+meta:
+    title: "This is my ebook"
+    language: "en-gb"
+    isbn: "000000"
+    creator: "John Doe D."
+    publisher: "John Doe D."
+    subject: "COMPUTERS / Programming / General"
+    date: 2011-01-01
+    description: "This is my first book"
+content:
+    toc: toc.ncx
+    cover: cover-image.gif
+    chapters:
+        - introduction
+        - chap1
+        - chap2
+        - chap3
+output: out
