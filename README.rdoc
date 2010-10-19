@@ -1,0 +1,6 @@
+= KBook Creator
+
+by Rolando Abarca M.
+m @ rolando.cl
+
+Simple kindle e-book creator. This is a WIP
