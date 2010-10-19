@@ -4,3 +4,26 @@ by Rolando Abarca M.
 m @ rolando.cl
 
 Simple kindle e-book creator. This is a WIP
+
+== How to Make it Work
+
+1. Download the Rakefile from this repo to a new directory (where your book will be)
+
+   http://github.com/funkaster/kbook_creator/raw/develop/Rakefile
+
+2. Run the prepare rake
+
+   rake prepare
+
+3. Write your book using the kbook-format (inspired in rdoc). Store your chapters/files on the source directory
+
+4. Modify the config.yaml to suit your needs
+
+5. Build the HTML
+
+  rake html
+
+== TODO
+
+* Finish NCX support
+* Integrate with the kindle cli utilities
