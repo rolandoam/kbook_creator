@@ -9,11 +9,11 @@ Simple kindle e-book creator. This is a WIP
 
 1. Download the Rakefile from this repo to a new directory (where your book will be)
 
-     http://github.com/funkaster/kbook_creator/raw/develop/Rakefile
+  http://github.com/funkaster/kbook_creator/raw/develop/Rakefile
 
 2. Run the prepare task
 
-     rake prepare
+  rake prepare
 
 3. Write your book using the kbook-format (inspired in rdoc). Store your chapters/files on the source directory
 
@@ -22,6 +22,25 @@ Simple kindle e-book creator. This is a WIP
 5. Build the HTML
 
   rake html
+
+== KBook-Format
+
+It's inspired in rdoc, here's a basic list of commands. Feel free to add new features (everything should be packed inside creator.rb)
+
+This is the list of the current start-of-line commands (for these to work, the command should be the first character on the line).
+
+<code>#</code>:: Chapter Title. This should be the first line of your chapter. It can only appear once in every chapter.
+<code>=</code>:: Header. The number of '=' indicates the corresponding level. From h1 to h6.
+<code>*</code>:: Unordered list. The list continues until it finds a blank line or a line that does not start with a '*'.
+<code>-</code>:: a simple div tag. The div continues being the default container until another "-" is found.
+<code>::</code>:: End of chapter (a centered h1 with a "* * *" in it)
+
+Inline formatting:
+
+<code>/word/</code>:: Translates to <code>em</code> tags.
+<code>*word*</code>:: Translates to <code>strong</code> tags.
+<code>_word_</code>:: Translates to <code>u</code> tags.
+<code>[+,footnote text]</code>:: Creates a new footnote. The numbering is automatically assigned and all footnotes are placed at the end of the chapter.
 
 == TODO
 
