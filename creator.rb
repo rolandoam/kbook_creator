@@ -169,7 +169,7 @@ class MOBI
         i = 0
         while line[i,1] == "="
           i += 1
-          break if i > 2
+          break if i > 5
         end
         @current_container << Entity.new("h#{i}", line.gsub(/^=+ */, ''))
       end
