@@ -1,5 +1,5 @@
 CURL = "/usr/bin/curl"
-BRANCH = "master"
+BRANCH = "develop"
 KINDLE_GEN = "/Users/rolando/Applications/KindleGen/kindlegen"
 
 file ".creator.rb" do
