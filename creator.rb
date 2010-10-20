@@ -134,14 +134,16 @@ class MOBI
         "="[0] => :header,
         "*"[0] => :ul,
         "-"[0] => :div,
-        "<"[0] => :tag,
-        "^"[0] => :section,    # custom kindle tag
+        ">"[0] => :image,
+        # "<"[0] => :tag,
+        # "^"[0] => :section,    # custom kindle tag
         "!"[0] => :page_break, # custom kindle tag
         ":"[0] => :eoc,
       }
       FORMATTING = [
         [%r{\[@,([^\],]+)(,([^\]]+))?\]}, :link],
         [%r{\[\+,([^\]]+)\]}, :footnote],
+        [%r{\[!,([\w/\._-]+),([^\]]+)\]}, :image],
         [%r{_([^_]+)_}, "em"],
         [%r{\*([^*]+)\*}, "strong"],
       ]
@@ -186,6 +188,9 @@ class MOBI
       def process_title(line)
         add_last_ul
         @title = line[1,100]
+        # let's also add a header
+        @current_container << Entity.new("h1", @title)
+        @current_container << Entity.new("br")
       end
       
       def process_header(line)
@@ -224,6 +229,7 @@ class MOBI
         if @last_div
           @current_container = @entities
           @current_container << @last_div
+          @last_div = nil
         else
           @last_div = Entity.new("div")
           @current_container = @last_div
@@ -249,6 +255,22 @@ class MOBI
       def process_section(line)
       end
       
+      def process_image(line)
+        if md = line.match(%r{>([\w/\._-]+),([^,]+)(,(\d+),(\d+))?})
+          img = Entity.new("img")
+          img["src"] = md[1]
+          img["alt"] = md[2]
+          if md[3]
+            img["width"] = md[4]
+            img["height"] = md[5]
+          end
+          # we always add line images centered
+          div = Entity.new("div").centered
+          div << img
+          @current_container << div
+        end
+      end
+      
       def process_page_break(line)
         @current_container << Entity.new("mbp:pagebreak")
       end
@@ -268,6 +290,14 @@ class MOBI
         a["href"] = md[1]
         a << (md[3] || md[1]).strip
         line.gsub!(md[0], a.to_html)
+      end
+      
+      def process_inline_image(md, line)
+        img = Entity.new("img")
+        img["src"] = md[1]
+        img["alt"] = md[2]
+        img << ""
+        line.gsub!(md[0], img.to_html)
       end
       
       # parse attributes for tag
