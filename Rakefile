@@ -1,4 +1,5 @@
 CURL = "/usr/bin/curl"
+# keep this pointing to the develop branch until master reflects a working version
 BRANCH = "develop"
 KINDLE_GEN = "/Users/rolando/Applications/KindleGen/kindlegen"
 
