@@ -9,7 +9,7 @@ Simple kindle e-book creator. This is a WIP
 
 1. Download the Rakefile from this repo to a new directory (where your book will be)
 
-  http://github.com/funkaster/kbook_creator/raw/develop/Rakefile
+  http://github.com/funkaster/kbook_creator/raw/master/Rakefile
 
 2. Run the prepare task
 
