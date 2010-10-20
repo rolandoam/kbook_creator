@@ -27,8 +27,8 @@ This is the list of the current start-of-line commands (for these to work, the c
 [#] Chapter Title. This should be the first line of your chapter. It can only appear once in every chapter.
 [=] Header. The number of '=' indicates the corresponding level. From h1 to h6. This also creates entries in the Table of Contents.
 [*] Unordered list. The list continues until it finds a blank line or a line that does not start with a '*'.
-[-] a simple div tag. The div continues being the default container until another "-" is found.
-[:] End of chapter (a centered h1 with a "* * *" in it)
+[>] Image. It's placed inside a centered div. The whole line should be formatted: <code>>image-source.jpg,alt text,width,height</code>. Width and height are optional.
+[:] End of chapter separator (it's a colon, ":"). It will create a centered h1 with a "* * *" in it. The rest of the line is ignored. It does not create anything in the table of contents, so you can use it to separate other things if you want.
 
 Inline formatting:
 
@@ -36,6 +36,7 @@ Inline formatting:
 <code>\*word\*</code>:: Translates to <code>strong</code> tags.
 <code>[+,footnote text]</code>:: Creates a new footnote. The numbering is automatically assigned and all footnotes are placed at the end of the chapter.
 <code>[@,link,<text>]</code>:: Creates a link. Text is optional, otherwise it just puts the hyperlink as the text of the link.
+<code>[!,source,alt text]:: Inline image.
 
 == Requirements
 

@@ -133,10 +133,10 @@ class MOBI
         "#"[0] => :title,
         "="[0] => :header,
         "*"[0] => :ul,
-        "-"[0] => :div,
+        # "-"[0] => :div,
         ">"[0] => :image,
         # "<"[0] => :tag,
-        # "^"[0] => :section,    # custom kindle tag
+        "^"[0] => :section,    # custom kindle tag
         "!"[0] => :page_break, # custom kindle tag
         ":"[0] => :eoc,
       }
