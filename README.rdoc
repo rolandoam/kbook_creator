@@ -37,7 +37,7 @@ This is the list of the current start-of-line commands (for these to work, the c
 
 Inline formatting:
 
-<code>_word_</code>:: Translates to <code>em</code> tags.
+<code>\_word\_</code>:: Translates to <code>em</code> tags.
 <code>\*word\*</code>:: Translates to <code>strong</code> tags.
 <code>[+,footnote text]</code>:: Creates a new footnote. The numbering is automatically assigned and all footnotes are placed at the end of the chapter.
 <code>[@,link,<text>]</code>:: Creates a link. Text is optional, otherwise it just puts the hyperlink as the text of the link.
