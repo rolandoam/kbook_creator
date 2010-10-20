@@ -1,0 +1,36 @@
+# name defines the name of the project
+name: "my-ebook"
+# meta information about the project
+meta:
+    title: "This is my ebook"
+    language: "en-gb"
+    isbn: "000000"
+    creator: "John Doe D."
+    publisher: "John Doe D."
+    subject: "COMPUTERS / Programming / General"
+    date: 2011-01-01
+    description: "This is my first book"
+content:
+    # Cover image dimensions (72 dpi)
+    # Minimum 500 x Maximum 1280 pixels
+    # 
+    # check restricions for the cover image here:
+    # http://forums.digitaltextplatform.com/dtpforums/entry.jspa?externalID=50&categoryID=10
+    cover: cover-image.gif
+    # the first chapter is also the "welcome" one.
+    # try to keep chapter names in one word, as they are also file names
+    # and tags id
+    # 
+    # chapters should live under the source directory and should have a
+    # .txt extension
+    # 
+    # for this example, source/introduction.txt should exist
+    chapters:
+        - introduction
+        # - chap1
+        # - chap2
+        # - chap3
+# this is the output directory.
+# on the setup task it will be created and on the clean task it will be
+# deleted.
+output: out
