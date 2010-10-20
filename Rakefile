@@ -1,5 +1,6 @@
 CURL = "/usr/bin/curl"
 BRANCH = "develop"
+KINDLE_GEN = "/Users/rolando/Applications/KindleGen/kindlegen"
 
 file ".creator.rb" do
   curl("creator.rb", ".creator.rb")
@@ -15,9 +16,13 @@ desc "Creates the html from the sources and media"
 task :html => [".creator.rb", :prepare] do
   require ".creator.rb"
   
-  # get the latest version of media
+  # get the latest version of media - always
   curl("media/main.css")
-  MOBI.new.create(ENV['PWD'])
+  m = MOBI.new
+  m.create(ENV['PWD'])
+  
+  # generate the .mobi
+  sh "#{KINDLE_GEN} -o #{m.config['name']}.mobi out/#{m.config['name']}.opf || echo ''"
 end
 
 desc "Cleans the output"
@@ -26,14 +31,16 @@ task :clean do
 end
 
 desc "Prepares the current directory and creates the tree structure"
-task :prepare => [".creator.rb"] do
+task :prepare => [".creator.rb"] do |t, args|
   mkdir_p "source"
   mkdir_p "media"
   mkdir_p "out"
 
-  if !File.exists?("config.yaml") || ask_yn("replace config.yaml with default version?")
+  if !File.exists?("config.yaml")
     rm_f "config.yaml"
     curl("config.yaml")
+    puts ""
+    puts "You should edit config.yaml to suit your needs now"
   end
 end
 

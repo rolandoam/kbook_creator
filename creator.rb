@@ -16,6 +16,8 @@ class Array
 end
 
 class MOBI
+  attr_reader :config
+  
   MEDIA_TYPES = {
     ".gif" => "image/gif",
     ".jpeg" => "image/jpeg",
