@@ -29,9 +29,9 @@ class MOBI
     class InvalidEntity < StandardError; end
     attr_accessor :content, :name
     
-    VALID_ENTITIES = %w(title div p br a b img h1 h2 h3 h4 h5 h6 ul li)
+    VALID_ENTITIES = %w(title div p code br a b img h1 h2 h3 h4 h5 h6 ul li)
     BLOCK_TYPE = {
-      :block => %w(title div p br img h1 h2 h3 h4 h5 h6 ul li),
+      :block => %w(title div p code br img h1 h2 h3 h4 h5 h6 ul li),
       :inline => %w(a b)
     }
     
@@ -133,9 +133,8 @@ class MOBI
         "#"[0] => :title,
         "="[0] => :header,
         "*"[0] => :ul,
-        # "-"[0] => :div,
         ">"[0] => :image,
-        # "<"[0] => :tag,
+        "%"[0] => :code,
         "^"[0] => :section,    # custom kindle tag
         "!"[0] => :page_break, # custom kindle tag
         ":"[0] => :eoc,
@@ -174,12 +173,17 @@ class MOBI
               send("process_#{COMMANDS[command]}".to_sym, line)
             else
               add_last_ul
-              unless line.empty?
-                last_p << line if last_p
+              if @current_container.is_a?(Entity) && @current_container.name == "code"
+                @current_container << line
+                @current_container << Entity.new("br")
               else
-                @current_container << last_p unless last_p.empty?
-                last_p = Entity.new("p")
-              end
+                unless line.empty?
+                  last_p << line if last_p
+                else
+                  @current_container << last_p unless last_p.empty?
+                  last_p = Entity.new("p")
+                end
+              end # inside a code?
             end
           end # while file.gets
         end # File.open
@@ -224,34 +228,7 @@ class MOBI
       def process_eoc(line)
         @entities << Entity.new("h1", "* * *").centered
       end
-      
-      def process_div(line)
-        if @last_div
-          @current_container = @entities
-          @current_container << @last_div
-          @last_div = nil
-        else
-          @last_div = Entity.new("div")
-          @current_container = @last_div
-          if md = line.match(/-(\.(\w+))?/)
-            @last_div["class"] = md[2]
-          end
-        end
-      end
-      
-      def process_tag(line)
-        if md = line.match(/<(\w+)(\.(\w+))? +([^>]+)>/)
-          tag = md[1]
-          css_class = md[3]
-          entity = Entity.new(tag)
-          if md[4] # attributes
-            entity.attributes = parse_attrs(md[4])
-          end
-          entity["class"] = css_class if css_class
-          @current_container << entity
-        end
-      end
-      
+            
       def process_section(line)
       end
       
@@ -268,6 +245,17 @@ class MOBI
           div = Entity.new("div").centered
           div << img
           @current_container << div
+        end
+      end
+      
+      def process_code(line)
+        if @last_code
+          @current_container = @entities
+          @current_container << @last_code
+          @last_code = nil
+        else
+          @last_code = Entity.new("code")
+          @current_container = @last_code
         end
       end
       
