@@ -51,7 +51,7 @@ task :update do
 end
 
 def curl(file, dest = nil, base_path = "http://github.com/funkaster/kbook_creator/raw", branch = BRANCH)
-  sh "#{CURL} -s -o '#{dest ? dest : file}' '#{base_path}/#{branch}/#{file}'"
+  sh "#{CURL} -s -L -o '#{dest ? dest : file}' '#{base_path}/#{branch}/#{file}'"
 end
 
 # ask yes/no question
